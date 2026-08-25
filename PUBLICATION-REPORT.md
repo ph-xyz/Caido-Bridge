@@ -2,15 +2,16 @@
 
 Date: 2026-08-25  
 Repository: `github.com/ph-xyz/Caido-Bridge`  
-Status: private source review in progress on
-[PR #2](https://github.com/ph-xyz/Caido-Bridge/pull/2); no tag or GitHub Release
-has been published.
+Status: audited source on a clean `main`; the repository is private pending
+source publication. No version tag or GitHub Release has been published.
 
 ## Source and repository audit
 
 - Repository hygiene scans found no committed credential, private key, tunnel
   ID, DPAPI store, log, dump, packaged binary, local configuration, or release
   archive.
+- Reachable Git history starts at the audited root commit and uses the GitHub
+  noreply identity; the previous private repository remains a separate backup.
 - CaidoBridge calls only the local Caido `/health` and `/graphql` endpoints.
   No Caido plugin is required.
 - OpenAI `tunnel-client` remains an external dependency and is not
@@ -38,7 +39,7 @@ has been published.
 
 ## Automated release gates
 
-The CI workflow must pass all of the following on the final PR head:
+The CI workflow must pass all of the following on the final pull request head:
 
 | Gate | Required result |
 | --- | --- |
@@ -80,15 +81,25 @@ Use a disposable Windows amd64 VM/user and non-production credentials.
 - [ ] Exercise all uninstall modes and confirm credentials are removed only by
       the explicit `All` choice.
 
-## GitHub publication checklist
+## Source publication checklist
 
-- [ ] Finish PR #2 with every required CI check green.
-- [ ] Enable private vulnerability reporting.
-- [ ] Protect `main`: require PRs, required CI checks, conversation
-      resolution, and no force pushes/deletions.
-- [ ] Remove the personal email from reachable Git history before changing
-      repository visibility.
-- [ ] Complete the manual Windows checklist.
+- [x] Rebuild reachable history from a clean root commit using the GitHub
+      noreply identity.
+- [x] Pass Linux Go checks and Windows build/installer checks on clean `main`.
+- [x] Configure `main` to require pull requests, both CI jobs, up-to-date
+      branches, conversation resolution, and no bypass, force pushes, or
+      deletions. Enforcement begins when the repository becomes public.
+- [x] Configure repository description, focused topics, squash-only merging,
+      and automatic deletion of merged head branches.
+- [x] Enable the dependency graph, Dependabot alerts, security updates, and
+      grouped security updates.
+- [ ] Change repository visibility to public.
+- [ ] Immediately verify branch protection enforcement and enable private
+      vulnerability reporting, which GitHub exposes only for public repositories.
+
+## Release checklist
+
+- [ ] Complete the manual Windows acceptance checklist.
 - [ ] Create annotated tag `v0.4.0` only from the reviewed `main` commit.
 - [ ] Download the tag workflow artifact and independently verify its manifest,
       members, executable version, and sidecar hashes.
@@ -96,5 +107,7 @@ Use a disposable Windows amd64 VM/user and non-production credentials.
 - [ ] State that the executable is unsigned, `tunnel-client` is external,
       Active Replay is opt-in, and explicit authorization is required.
 
-Do not change repository visibility or publish a release until every applicable
-item above is complete.
+Publishing the audited source is separate from publishing a supported binary
+release. The source may become public after this status update merges. Do not
+create the version tag or GitHub Release until the manual Windows checklist is
+complete.
