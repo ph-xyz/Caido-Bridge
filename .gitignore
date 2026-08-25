@@ -1,0 +1,14 @@
+/bin/
+/dist/
+*.exe
+*.zip
+*.log
+*.dmp
+.env
+.env.*
+config.json
+*.backup
+*.staged
+*.tmp
+.DS_Store
+Thumbs.db

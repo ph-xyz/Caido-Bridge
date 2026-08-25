@@ -1,0 +1,55 @@
+name: Release artifacts
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Build validated Windows amd64 package
+    runs-on: windows-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Set up Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Verify tag and source version
+        shell: powershell
+        run: |
+          $version = $env:GITHUB_REF_NAME.Substring(1)
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Tag must be v<semver>.' }
+          $source = Get-Content .\cmd\caidobridge\main.go -Raw
+          if ($source -notmatch ('const version = "' + [regex]::Escape($version) + '"')) {
+            throw "Tag $env:GITHUB_REF_NAME does not match the source version."
+          }
+      - name: Verify source
+        shell: powershell
+        run: |
+          if (gofmt -l .) { throw 'gofmt check failed.' }
+          go mod verify
+          go test ./...
+          go vet ./...
+          .\scripts\installer-tests.ps1
+          .\scripts\verify-repository.ps1
+      - name: Build, package, and validate
+        shell: powershell
+        run: |
+          $version = $env:GITHUB_REF_NAME.Substring(1)
+          .\scripts\build-release.ps1 -Version $version
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: CaidoBridge-${{ github.ref_name }}-windows-amd64
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+
+# This workflow intentionally does not create or publish a GitHub Release.
+# Review the uploaded ZIP and checksums, then publish them manually.
