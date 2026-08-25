@@ -2,16 +2,15 @@
 
 Date: 2026-08-25  
 Repository: `github.com/ph-xyz/Caido-Bridge`  
-Status: audited source on a clean `main`; the repository is private pending
-source publication. No version tag or GitHub Release has been published.
+Status: audited source is public on protected `main`. No version tag or GitHub
+Release has been published.
 
 ## Source and repository audit
 
 - Repository hygiene scans found no committed credential, private key, tunnel
   ID, DPAPI store, log, dump, packaged binary, local configuration, or release
   archive.
-- Reachable Git history starts at the audited root commit and uses the GitHub
-  noreply identity; the previous private repository remains a separate backup.
+- Reachable Git history uses GitHub's privacy-preserving noreply identity.
 - CaidoBridge calls only the local Caido `/health` and `/graphql` endpoints.
   No Caido plugin is required.
 - OpenAI `tunnel-client` remains an external dependency and is not
@@ -83,19 +82,19 @@ Use a disposable Windows amd64 VM/user and non-production credentials.
 
 ## Source publication checklist
 
-- [x] Rebuild reachable history from a clean root commit using the GitHub
+- [x] Confirm reachable commit metadata uses GitHub's privacy-preserving
       noreply identity.
 - [x] Pass Linux Go checks and Windows build/installer checks on clean `main`.
-- [x] Configure `main` to require pull requests, both CI jobs, up-to-date
+- [x] Protect `main` with mandatory pull requests, both CI jobs, up-to-date
       branches, conversation resolution, and no bypass, force pushes, or
-      deletions. Enforcement begins when the repository becomes public.
+      deletions.
 - [x] Configure repository description, focused topics, squash-only merging,
       and automatic deletion of merged head branches.
 - [x] Enable the dependency graph, Dependabot alerts, security updates, and
       grouped security updates.
-- [ ] Change repository visibility to public.
-- [ ] Immediately verify branch protection enforcement and enable private
-      vulnerability reporting, which GitHub exposes only for public repositories.
+- [x] Change repository visibility to public.
+- [x] Verify branch protection enforcement and enable private vulnerability
+      reporting.
 
 ## Release checklist
 
@@ -108,6 +107,5 @@ Use a disposable Windows amd64 VM/user and non-production credentials.
       Active Replay is opt-in, and explicit authorization is required.
 
 Publishing the audited source is separate from publishing a supported binary
-release. The source may become public after this status update merges. Do not
-create the version tag or GitHub Release until the manual Windows checklist is
-complete.
+release. The audited source is public. Do not create the version tag or GitHub
+Release until the manual Windows checklist is complete.
